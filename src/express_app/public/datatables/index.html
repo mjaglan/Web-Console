@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap/css/bootstrap-theme.min.css" />
+  <link rel="stylesheet" type="text/css" href="stylesheets/datatables/dataTables.min.css" />
+
+  <head>
+    <title>Client Index HTML</title>
+  </head>
+
+  <body>
+    <!--  FIXED NAV BAR  -->
+    <nav class="navbar navbar-inverse bg-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#"><img src="images/logo.png" alt="Logo" class="img-responsive"></a>
+        </div>
+        <p class="navbar-text navbar-right">Welcome, <span id="userIP">Visitor</span></p>
+      </div>
+    </nav>
+
+    <!--  JUMBOTRON  -->
+    <div class="container" style="padding-top:70px">
+      <div class="jumbotron jumbotron-fluid">
+      <div class="row" style="display:flex">
+        <div class="container">
+          <h1 class="display-4">Client DataTables</h1>
+          <p class="lead">This is a read only DataTables demo learned from
+            <a href="https://datatables.net/" target="_blank">datatables.net</a>
+          </p>
+        </div>
+        <div class="row">
+          <!-- InstaWidget -->
+          <a href="https://instawidget.net/v/tag/nodejs" id="link-33599a471b040ffed238a7d31a9daefd2ad1fff4f9ae5997c365c0be86835d9a">#nodejs</a>
+          <script src="https://instawidget.net/js/instawidget.js?u=33599a471b040ffed238a7d31a9daefd2ad1fff4f9ae5997c365c0be86835d9a&width=300px"></script>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!--  DATATABLES  -->
+    <div class="container" style="padding-bottom:70px">
+        <table id="example" class="table table-striped" style="cellspacing=0; width=100%">
+            <thead>
+                <tr class="header">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Comments</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <!--  FOOTER  -->
+    <footer class="panel-footer navbar-fixed-bottom">
+      <div class="container">
+        <div class="row" style="display:flex">
+          <div class="container">
+            <p class="text-muted">This project is for demo purpose only. Released under MIT License.</p>
+          </div>
+          <div class="container">
+            <p class="text-muted" align="right"><a href="https://stackoverflow.com/questions/tagged/datatables">datatables @ stackoverflow.com</a></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- CLIENT JAVASCRIPT -->
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="stylesheets/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="stylesheets/datatables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="stylesheets/datatables/DataTables-1.10.16/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#example').DataTable({
+                // https://datatables.net/reference/option/serverSide
+                "serverSide": false,
+                "ajax": {
+                    "url": '/thor/api/',
+                    "dataSrc": ''
+                },
+                "columns": [{
+                    data: "id"
+                }, {
+                    data: "name"
+                }, {
+                    data: "comments"
+                }],
+                "pagingType": "full_numbers",
+                "pageLength": 5,
+                "lengthChange": false
+            });
+        });
+        $.getJSON('//freegeoip.net/json/?callback=?', function(data) {
+            let ip = data.ip;
+            $("#userIP").text(ip);
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+  <style scoped>
+	/* provides a red astrix to denote required fields - this should be included in common stylesheet */
+	.form-group.required .control-label:after {
+		content:"*";
+		color:red;
+		margin-left: 4px;
+	}
+  </style>
+  <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap/css/bootstrap-theme.min.css" />
+  <link rel="stylesheet" type="text/css" href="stylesheets/footable-bootstrap/css/footable.bootstrap.min.css" />
+
+  <head>
+    <title>Client Index HTML</title>
+  </head>
+
+  <body>
+  <!--  TABLE ROW MODAL  -->
+  <div class="modal fade" id="editor-modal" tabindex="-1" role="dialog" aria-labelledby="editor-title">
+		<div class="modal-dialog" role="document">
+			<form class="modal-content form-horizontal" id="editor">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+					<h4 class="modal-title" id="editor-title">Add Row</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group required">
+						<div class="col-sm-9">
+							<input type="hidden" class="form-control" id="id" name="id" placeholder="First Name" required>
+						</div>
+					</div>
+					<div class="form-group required">
+						<label for="name" class="col-sm-3 control-label">Name</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="name" name="name" placeholder="Last Name" required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="comments" class="col-sm-3 control-label">Comments</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="comments" name="comments" placeholder="Job Title">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary">Save changes</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+    <!--  FIXED NAV BAR  -->
+    <nav class="navbar navbar-inverse bg-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#"><img src="images/logo.png" alt="Logo" class="img-responsive"></a>
+        </div>
+        <p class="navbar-text navbar-right">Welcome, <span id="userIP">Visitor</span></p>
+      </div>
+    </nav>
+
+    <!--  JUMBOTRON  -->
+    <div class="container" style="padding-top:70px">
+      <div class="jumbotron jumbotron-fluid">
+      <div class="row" style="display:flex">
+        <div class="container">
+          <h1 class="display-4">Client FooTable</h1>
+          <p class="lead">This is an editable FooTable demo learned from
+            <a href="http://fooplugins.github.io/FooTable/" target="_blank">fooplugins.github.io/FooTable</a>
+          </p>
+        </div>
+        <div class="row">
+          <!-- InstaWidget -->
+          <a href="https://instawidget.net/v/tag/nodejs" id="link-33599a471b040ffed238a7d31a9daefd2ad1fff4f9ae5997c365c0be86835d9a">#nodejs</a>
+          <script src="https://instawidget.net/js/instawidget.js?u=33599a471b040ffed238a7d31a9daefd2ad1fff4f9ae5997c365c0be86835d9a&width=300px"></script>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <!--  FOOTABLE  -->
+    <div class="container" style="padding-bottom:70px">
+	<table id="editing-example" class="table table-striped" style="cellspacing=0; width=100%"></table>
+    </div>
+
+    <!--  FOOTER  -->
+    <footer class="panel-footer navbar-fixed-bottom">
+      <div class="container">
+        <div class="row" style="display:flex">
+          <div class="container">
+            <p class="text-muted">This project is for demo purpose only. Released under MIT License.</p>
+          </div>
+          <div class="container">
+            <p class="text-muted" align="right"><a href="https://stackoverflow.com/questions/tagged/footable">footable @ stackoverflow.com</a></p>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- CLIENT JAVASCRIPT -->
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="stylesheets/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="stylesheets/footable-bootstrap/js/footable.min.js"></script>
+    <script>
+        $(document).ready(function($){
+        	var $modal = $('#editor-modal');
+        	var $editor = $('#editor');
+        	var $editorTitle = $('#editor-title');
+
+        	ft = FooTable.init('#editing-example', {
+        		// TYPE: GET
+        		"columns": [{
+        				      "name":"id",
+        				      "title":"ID",
+        				      "visible":true
+        				   },
+        				   {
+        				      "name":"name",
+        				      "title":"Name",
+        				      "visible":true
+        				   },
+        				   {
+        				      "name":"comments",
+        				      "title":"Comments",
+        				      "visible":true
+        				   }],
+        		"rows": $.get('/thor/api/'),
+
+        		"editing": {
+					"enabled": true,
+					"pageToNew": true,
+					"position": "right",
+					"alwaysShow": false,
+					"allowAdd": true,
+					"allowEdit": true,
+					"allowDelete": true,
+					"allowView": false,
+	    			deleteRow: function(row){
+	    				console.log("DELETE: executed!");
+	    				if (confirm('DELETE?')){
+	    					// TYPE: DELETE
+	    					row.delete();
+	    					$.ajax({
+	    					    url: '/thor/api/',
+	    					    type: "delete",
+	    					    data: {'id':row.value.id},
+	    					    success: function(result) {
+	    					        console.log(result);
+	    					    }
+	    					});
+	    				}
+	    			},
+	    			addRow: function(){
+	    				console.log("ADD: executed!");
+	    				$modal.removeData('row');
+	    				$editor[0].reset();
+	    				$editorTitle.text('Add a new row');
+	    				$modal.modal('show');
+	    			},
+	    			editRow: function(row){
+	    				console.log("EDIT: executed!");
+	    				var values = row.val();
+	    				console.log(values);
+	    				$editor.find('#id').val(values.id);
+	    				$editor.find('#name').val(values.name);
+	    				$editor.find('#comments').val(values.comments);
+
+	    				$modal.data('row', row);
+	    				$editorTitle.text('Edit row #' + values.id);
+	    				$modal.modal('show');
+	    			}
+	    		},
+
+        		"filtering": {
+        			"enabled": true,
+        			"delay": 1,
+        			"dropdownTitle": "Search in:",
+        			"position": "right",
+        			"placeholder": "Type Here"
+        		},
+
+        		"paging": {
+        			"enabled": true,
+        			"limit": 10,
+        			"size": 5,
+        			"position": "center"
+        		},
+
+        		"sorting": {
+        			"enabled": true
+        		},
+
+        		"state": {
+        			"enabled": true,
+        			"filtering": false,
+        			"paging": true,
+        			"sorting": true
+        		}
+        	});
+
+        	$editor.on('submit', function(e){
+        		if (this.checkValidity && !this.checkValidity())
+        			return;
+
+        		// e.preventDefault(); // KEEP DISABLED: reload page for each PUT & POST
+
+        		var row = $modal.data('row'),
+        			values = {
+        				id: $editor.find('#id').val(),
+        				name: $editor.find('#name').val(),
+        				comments: $editor.find('#comments').val()
+        			};
+
+        		if (row instanceof FooTable.Row){
+        			// TYPE: PUT
+        			row.val(values);
+					$.ajax({
+					    url: '/thor/api/',
+					    type: "put",
+					    data: {'id':row.value.id,'name':row.value.name,'comments':row.value.comments},
+					    success: function(result) {
+					        console.log(result);
+					    }
+					});
+        		} else {
+					// TYPE: POST
+					ft.rows.add(values);
+					$.ajax({
+					    url: '/thor/api/',
+					    type: "post",
+					    data: values,
+					    success: function(result) {
+					        console.log(result);
+					    }
+					});
+        		}
+
+        		$modal.modal('hide');
+        	});
+
+        });
+
+        $.getJSON('//freegeoip.net/json/?callback=?', function(data) {
+            let ip = data.ip;
+            $("#userIP").text(ip);
+        });
+    </script>
+  </body>
+</html>
