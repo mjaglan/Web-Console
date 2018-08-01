@@ -65,3 +65,10 @@ typings/
 .README.md.html
 src/*/node_modules
 src/express_app/.env
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# vagrant
+dev/.vagrant
+dev/vagrant-shared

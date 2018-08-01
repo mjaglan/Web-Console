@@ -8,7 +8,7 @@ A simple usecase is to have external automation systems report new data to MySQL
 
 ### How to Run
 
-- You need to install docker on your host. See [Install-Docker-on-Ubuntu](Install-Docker-on-Ubuntu.md).
+- Install Vagrant & VirtualBox.
 
 - Go to your terminal.
 
@@ -23,6 +23,17 @@ A simple usecase is to have external automation systems report new data to MySQL
   USER: root
   DB: testdb
   ```
+
+- To run a vagrant box refer [dev/README.md](dev/). After this step, assuming you're inside the vagrant box.
+
+- `cd /tmp/` and you'll see following directories:
+  ```
+  vagrant@vagrant-test-bed:/tmp$ ls -l
+  drwxr-xr-x 1 vagrant vagrant  128 Jul 29 20:51 ops
+  drwxr-xr-x 1 vagrant vagrant  128 Jul 29 20:51 src
+  drwxr-xr-x 1 vagrant vagrant   96 Jul 30 04:35 vagrant-shared
+  ```
+  *tip: most often the permissions for executable files are not set to 755.*
 
 - Run following scripts to setup MySQL DB
   - Setup `testbed-mysql` MySQL container:
@@ -49,14 +60,14 @@ A simple usecase is to have external automation systems report new data to MySQL
 - This application inside docker container page can be browsed at following URLs
 
   ```SERVER SIDE```
-  - server side json response @ [http://CONTAINER-IP:12000/thor/api](http://0.0.0.0:12000/thor/api)
-  - server side default error.ejs response @ [http://CONTAINER-IP:12000/404](http://0.0.0.0:12000/404)
-  - server side index.ejs response @ [http://CONTAINER-IP:12000/thor/ejs/index](http://0.0.0.0:12000/thor/ejs/index)
-  - server side index.html response @ [http://CONTAINER-IP:12000/thor/html/index](http://0.0.0.0:12000/thor/html/index)
+  - server side json response @ [http://VAGRANT-BOX-IP:12000/thor/api](http://192.168.10.51:12000/thor/api)
+  - server side default error.ejs response @ [http://VAGRANT-BOX-IP:12000/404](http://192.168.10.51:12000/404)
+  - server side index.ejs response @ [http://VAGRANT-BOX-IP:12000/thor/ejs/index](http://192.168.10.51:12000/thor/ejs/index)
+  - server side index.html response @ [http://VAGRANT-BOX-IP:12000/thor/html/index](http://192.168.10.51:12000/thor/html/index)
 
   ```CLIENT SIDE```
-  - client read-only datatables ui @ [http://CONTAINER-IP:12000/datatables](http://0.0.0.0:12000/datatables)
-  - client editable footable ui @ [http://CONTAINER-IP:12000/footable](http://0.0.0.0:12000/footable)
+  - client read-only datatables ui @ [http://VAGRANT-BOX-IP:12000/datatables](http://192.168.10.51:12000/datatables)
+  - client editable footable ui @ [http://VAGRANT-BOX-IP:12000/footable](http://192.168.10.51:12000/footable)
     ![footable ui](/docs/images/footable.ui.png)
 
 
@@ -69,7 +80,7 @@ baeace45220f        testbed             bridge              local
 
 $ docker ps
 CONTAINER ID        IMAGE                 COMMAND                  CREATED             STATUS              PORTS                     NAMES
-475203aa27f7        mjaglan/expressnode   "/bin/sh -c bash"        5 minutes ago       Up 5 minutes        0.0.0.0:12000->3000/tcp   testbed
+475203aa27f7        mjaglan/expressnode   "/bin/sh -c bash"        5 minutes ago       Up 5 minutes        192.168.10.51:12000->3000/tcp   testbed
 146d749c1272        mysql:5.6             "docker-entrypoint.s…"   31 minutes ago      Up 31 minutes       3306/tcp                  testbed-mysql
 ...
 ```
